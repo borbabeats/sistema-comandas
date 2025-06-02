@@ -1,6 +1,4 @@
 [
-    {"name": "Chocolate Lava Cake", "description": "Warm chocolate cake with a gooey molten center, served with vanilla ice cream.", "price": 8.99, "info": "Contains gluten, 20 min prep"},
-    {"name": "Cheesecake", "description": "Creamy New York-style cheesecake with a graham cracker crust.", "price": 7.50, "info": "Contains gluten, 45 min prep"},
     {"name": "Tiramisu", "description": "Layers of coffee-soaked ladyfingers, mascarpone cream, and cocoa powder.", "price": 8.25, "info": "Contains gluten, 30 min prep"},
     {"name": "Apple Pie", "description": "Classic apple pie with a flaky crust, served warm with cinnamon.", "price": 6.99, "info": "Contains gluten, 1 hr prep"},
     {"name": "Crème Brûlée", "description": "Rich vanilla custard with a caramelized sugar crust.", "price": 7.75, "info": "Gluten-free, 40 min prep"},

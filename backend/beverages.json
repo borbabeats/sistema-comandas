@@ -1,6 +1,4 @@
 [
-    {"name": "Cabernet Sauvignon", "description": "A bold red wine with notes of blackberry, cassis, and oak.", "price": 12.99, "info": "Alcoholic, 13.5% ABV, served by glass", "type": "wine"},
-    {"name": "Chardonnay", "description": "Crisp white wine with hints of apple, pear, and vanilla.", "price": 11.50, "info": "Alcoholic, 12.5% ABV, served by glass", "type": "wine"},
     {"name": "Pinot Noir", "description": "Light red wine with cherry and earthy undertones.", "price": 13.25, "info": "Alcoholic, 13% ABV, served by glass", "type": "wine"},
     {"name": "Sauvignon Blanc", "description": "Refreshing white wine with citrus and green apple notes.", "price": 10.99, "info": "Alcoholic, 12% ABV, served by glass", "type": "wine"},
     {"name": "Merlot", "description": "Smooth red wine with plum and chocolate flavors.", "price": 12.75, "info": "Alcoholic, 14% ABV, served by glass", "type": "wine"},

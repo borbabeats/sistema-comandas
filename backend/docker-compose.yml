@@ -2,8 +2,13 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"  # Map port 3000 of the container to port 3000 on the host
+      - "5000:5000"  # Map port 5000 of the container to port 5000 on the host
     environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_NAME=comandas
       - DATABASE_URL=postgres://admin:admin@db:5432/comandas
     depends_on:
       - db
@@ -15,5 +20,11 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: comandas
+    volumes:
+       - postgres_data:/var/lib/postgresql/data
+       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"  # Map port 5432 of the container to port 5432 on the host
+
+volumes:
+  postgres_data:

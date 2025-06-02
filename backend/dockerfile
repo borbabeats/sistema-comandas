@@ -1,20 +1,36 @@
-# Use the official Node.js image
-FROM node:16
+# Estágio de construção
+FROM node:16 AS builder
 
-# Set the working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
+# Copiar package.json e package-lock.json
 COPY package*.json ./
 
-# Install dependencies
+# Instalar dependências
 RUN npm install
 
-# Copy the rest of your application code
+# Copiar o restante dos arquivos
 COPY . .
 
-# Expose the port your app runs on
-EXPOSE 3000
+# Compilar TypeScript
+RUN npm run build
 
-# Command to run your application
-CMD node server.js  # Adjust this if your entry point is different
+# Estágio de produção
+FROM node:16-slim
+
+WORKDIR /usr/src/app
+
+# Copiar package.json e package-lock.json
+COPY package*.json ./
+
+# Instalar apenas as dependências de produção
+RUN npm install --only=production
+
+# Copiar os arquivos compilados do estágio de construção
+COPY --from=builder /usr/src/app/dist ./dist
+
+# Expor a porta
+EXPOSE 5000
+
+# Comando para iniciar a aplicação
+CMD ["node", "dist/server.js"]

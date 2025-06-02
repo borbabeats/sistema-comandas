@@ -1,22 +1,22 @@
-import { DataSource } from "typeorm";
+const { DataSource } = require("typeorm");
+const { Plate } = require("../src/entities/Plate");
+const { Dessert } = require("../src/entities/Dessert");
+const { Beverage } = require("../src/entities/Beverage");
+const { User } = require("../src/entities/User");
 
 const AppDataSource = new DataSource({
     type: "postgres",
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    entities: [User],
-    synchronize: true,
-})
+    host: process.env.DB_HOST || "db",
+    port: parseInt(process.env.DB_PORT || "5432"),
+    username: process.env.DB_USER || "admin",
+    password: process.env.DB_PASSWORD || "admin",
+    database: process.env.DB_NAME || "comandas",
+    entities: [Plate, Dessert, Beverage, User].filter(Boolean),
+    migrations: ["src/migrations/*.ts"],
+    synchronize: false,
+    logging: process.env.NODE_ENV === "development",
+    migrationsRun: false,
+    migrationsTableName: "migrations"
+});
 
-AppDataSource.initialize()
-    .then(() => {
-        console.log("Data Source has been initialized!")
-    })
-    .catch((error) => {
-        console.error("Error during Data Source initialization", error)
-    })
-
-export default AppDataSource
+module.exports = AppDataSource;

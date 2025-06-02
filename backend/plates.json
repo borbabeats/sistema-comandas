@@ -1,6 +1,4 @@
-[
-    {"name": "Grilled Salmon", "description": "Fresh salmon fillet grilled to perfection with lemon and herbs.", "price": 18.99, "info": "Gluten-free, 20 min prep", "type": ["seafood"]},
-    {"name": "Beef Steak", "description": "Juicy ribeye steak cooked to your liking, served with garlic butter.", "price": 24.50, "info": "High protein, 25 min prep", "type": ["red meat"]},
+[ 
     {"name": "Chicken Parmesan", "description": "Breaded chicken cutlet topped with marinara and melted mozzarella.", "price": 16.75, "info": "Contains gluten, 30 min prep", "type": ["white meat", "pasta"]},
     {"name": "Vegetarian Lasagna", "description": "Layers of pasta, ricotta, spinach, and marinara sauce.", "price": 14.25, "info": "Vegetarian, 35 min prep", "type": ["vegetarian", "pasta"]},
     {"name": "Shrimp Scampi", "description": "Succulent shrimp sautéed in garlic, butter, and white wine.", "price": 19.80, "info": "Gluten-free, 15 min prep", "type": ["seafood"]},
