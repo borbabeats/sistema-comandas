@@ -3,6 +3,9 @@ const { Plate } = require("../src/entities/Plate");
 const { Dessert } = require("../src/entities/Dessert");
 const { Beverage } = require("../src/entities/Beverage");
 const { User } = require("../src/entities/User");
+const { Order } = require("../src/entities/Order");
+
+const isDocker = process.env.DOCKER === 'true';
 
 const AppDataSource = new DataSource({
     type: "postgres",
@@ -11,9 +14,9 @@ const AppDataSource = new DataSource({
     username: process.env.DB_USER || "admin",
     password: process.env.DB_PASSWORD || "admin",
     database: process.env.DB_NAME || "comandas",
-    entities: [Plate, Dessert, Beverage, User].filter(Boolean),
+    entities: [Plate, Dessert, Beverage, User, Order].filter(Boolean),
     migrations: ["src/migrations/*.ts"],
-    synchronize: false,
+    synchronize: process.env.NODE_ENV === 'development',
     logging: process.env.NODE_ENV === "development",
     migrationsRun: false,
     migrationsTableName: "migrations"
