@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsBoolean, IsInt, Min } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsInt, Min, IsIn } from 'class-validator';
 
 export class UpdateOrderDto {
   @IsString()
@@ -23,4 +23,11 @@ export class UpdateOrderDto {
   @IsBoolean()
   @IsOptional()
   isPaid?: boolean;
+  
+  @IsString()
+  @IsIn(['pending', 'preparing', 'ready', 'delivered'], { 
+    message: 'Status inválido. Os valores permitidos são: pending, preparing, ready, delivered' 
+  })
+  @IsOptional()
+  status?: 'pending' | 'preparing' | 'ready' | 'delivered';
 }

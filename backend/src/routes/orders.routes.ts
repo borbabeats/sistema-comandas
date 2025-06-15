@@ -63,12 +63,13 @@ const validateRequest = <T extends object>(dtoClass: new () => T) => {
 
 // Create a new order
 const createOrder: AsyncRequestHandler = async (req, res) => {
-  const { clientName, plateId, beverageId, dessertId, isPaid } = (req as any).validatedBody as CreateOrderDto;
+  const { clientName, plateId, beverageId, dessertId, isPaid, observations } = (req as any).validatedBody as CreateOrderDto;
 
   try {
     const order = new Order();
     order.clientName = clientName;
     order.isPaid = isPaid || false;
+    order.observations = observations !== undefined ? observations : null;
 
     if (plateId) {
       const plate = await AppDataSource.getRepository(Plate).findOne({ where: { id: plateId } });
@@ -192,7 +193,7 @@ const updateOrder: AsyncRequestHandler = async (req, res) => {
       return res.status(404).json({ message: 'Pedido não encontrado' });
     }
 
-    const { clientName, plateId, beverageId, dessertId, isPaid } = (req as any).validatedBody as UpdateOrderDto;
+    const { clientName, plateId, beverageId, dessertId, isPaid, status } = (req as any).validatedBody as UpdateOrderDto;
 
     if (clientName !== undefined) {
       order.clientName = clientName;
@@ -200,6 +201,10 @@ const updateOrder: AsyncRequestHandler = async (req, res) => {
 
     if (isPaid !== undefined) {
       order.isPaid = isPaid;
+    }
+    
+    if (status !== undefined) {
+      order.status = status;
     }
 
     // Atualiza os relacionamentos se fornecidos

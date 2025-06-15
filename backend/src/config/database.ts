@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { User, Plate, Dessert, Beverage } from '../entities';
+import { User, Plate, Dessert, Beverage, Order } from '../entities';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -8,8 +8,8 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_NAME || 'sistema_comandas',
-  entities: [User, Plate, Dessert, Beverage],
-  synchronize: process.env.NODE_ENV !== 'production', // Cuidado em produção
+  entities: [User, Plate, Dessert, Beverage, Order],
+  synchronize: true, // Apenas para desenvolvimento - desativar em produção
   logging: process.env.NODE_ENV === 'development',
   migrations: ['src/migrations/*.ts'],
   subscribers: [],

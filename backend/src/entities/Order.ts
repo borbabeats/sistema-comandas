@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { IsString, IsNotEmpty, IsBoolean, IsDefined, ValidateIf } from 'class-validator';
+import { IsString, IsNotEmpty, IsBoolean, IsDefined, ValidateIf, IsOptional } from 'class-validator';
 import { Plate } from './Plate';
 import { Beverage } from './Beverage';
 import { Dessert } from './Dessert';
@@ -45,11 +45,23 @@ export class Order {
   @IsBoolean()
   isPaid: boolean = false;
 
+  @Column({ 
+    type: 'enum', 
+    enum: ['pending', 'preparing', 'ready', 'delivered'],
+    default: 'pending' 
+  })
+  status: 'pending' | 'preparing' | 'ready' | 'delivered' = 'pending';
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date = new Date();
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date = new Date();
+
+  @Column({ type: 'text', nullable: true })
+  @IsString()
+  @IsOptional()
+  observations: string | null = null;
 
   // Método para calcular o total do pedido
   calculateTotal(): number {
