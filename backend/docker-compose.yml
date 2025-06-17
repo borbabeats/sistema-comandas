@@ -11,20 +11,20 @@ services:
       - DB_NAME=comandas
       - DATABASE_URL=postgres://admin:admin@db:5432/comandas
     depends_on:
-      # - db
+       - db
 
-  # db:
-  #  image: postgres:13  # Use the official PostgreSQL image
-  #  restart: always
-  #  environment:
-  #    POSTGRES_USER: admin
-  #    POSTGRES_PASSWORD: admin
-  #    POSTGRES_DB: comandas
-  #  volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  #  ports:
-  #    - "5432:5432"  # Map port 5432 of the container to port 5432 on the host
+   db:
+    image: postgres:13  # Use the official PostgreSQL image
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: comandas
+    volumes:
+       - postgres_data:/var/lib/postgresql/data
+       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"  # Map port 5432 of the container to port 5432 on the host
 
 volumes:
   postgres_data:
