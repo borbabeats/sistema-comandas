@@ -8,23 +8,33 @@ function getDatabaseConfig() {
     RAILWAY_ENVIRONMENT: !!process.env.RAILWAY_ENVIRONMENT,
     DB_HOST: process.env.DB_HOST,
     PGHOST: process.env.PGHOST,
+    PGPORT: process.env.PGPORT,
+    PGUSER: process.env.PGUSER ? '***' : 'not set',
+    PGDATABASE: process.env.PGDATABASE,
     DATABASE_URL: process.env.DATABASE_URL ? '***' : 'not set'
   });
 
   // If running in Railway
   if (process.env.RAILWAY_ENVIRONMENT) {
-    // Use Railway's provided connection details
-    return {
+    // Use Railway's internal connection details
+    const config = {
       host: process.env.PGHOST || process.env.DB_HOST,
       port: parseInt(process.env.PGPORT || process.env.DB_PORT || '5432', 10),
       username: process.env.PGUSER || process.env.DB_USERNAME,
       password: process.env.PGPASSWORD || process.env.DB_PASSWORD,
-      database: process.env.PGDATABASE || process.env.DB_NAME || 'railway',
+      database: process.env.PGDATABASE || process.env.DB_NAME,
       ssl: {
-        rejectUnauthorized: false,
-        sslmode: 'require'
+        rejectUnauthorized: false
       }
     };
+    
+    console.log('Database connection config:', {
+      ...config,
+      password: '***',
+      ssl: '***'
+    });
+    
+    return config;
   }
 
   // For local development with DATABASE_URL
@@ -44,13 +54,19 @@ function getDatabaseConfig() {
   }
 
   // Fall back to individual environment variables for local development
+  const host = process.env.PGHOST || process.env.DB_HOST || 'localhost';
+  console.log('Using database host (fallback):', host);
+  
   return {
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432', 10),
-    username: process.env.DB_USERNAME || 'postgres',
-    password: process.env.DB_PASSWORD || 'postgres',
-    database: process.env.DB_NAME || 'sistema_comandas',
-    ssl: false
+    host,
+    port: parseInt(process.env.PGPORT || process.env.DB_PORT || '5432', 10),
+    username: process.env.PGUSER || process.env.DB_USERNAME || 'postgres',
+    password: process.env.PGPASSWORD || process.env.DB_PASSWORD || 'postgres',
+    database: process.env.PGDATABASE || process.env.DB_NAME || 'sistema_comandas',
+    ssl: process.env.NODE_ENV === 'production' ? {
+      rejectUnauthorized: false,
+      sslmode: 'require'
+    } : false
   };
 }
 
