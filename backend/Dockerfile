@@ -9,7 +9,7 @@ COPY package*.json ./
 # Copiar os arquivos de migração
 COPY src/migrations ./src/migrations
 COPY tsconfig*.json ./
-
+#
 # Instalar dependências
 RUN npm install
 
