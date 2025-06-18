@@ -25,21 +25,59 @@ function getDatabaseConfig(): DatabaseConfig {
   // Log das variáveis de ambiente para depuração
   console.log('\n=== Configuração do Banco de Dados ===');
   console.log('NODE_ENV:', process.env.NODE_ENV);
+  console.log('PORT:', process.env.PORT || '3000 (padrão)');
   console.log('DATABASE_URL:', process.env.DATABASE_URL ? '*** Configurado ***' : 'Não configurado');
-  console.log('DB_HOST:', process.env.DB_HOST || 'localhost (padrão)');
-  console.log('DB_NAME:', process.env.DB_NAME || 'sistema_comandas (padrão)');
   
-  // Configuração para produção (usando DATABASE_URL)
-  if (isProduction && process.env.DATABASE_URL) {
-    console.log('Usando configuração de produção com DATABASE_URL');
-    return {
+  // Log das variáveis de ambiente do Railway
+  console.log('\n=== Variáveis do Railway ===');
+  console.log('DB_USER:', process.env.DB_USER ? '***' : 'Não configurado');
+  console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? '***' : 'Não configurado');
+  console.log('DB_NAME:', process.env.DB_NAME || 'Não configurado');
+  
+  // Log de todas as variáveis de ambiente (útil para depuração)
+  console.log('\n=== Todas as Variáveis de Ambiente ===');
+  Object.keys(process.env).forEach(key => {
+    if (key.startsWith('DB_') || key.startsWith('PG') || key === 'NODE_ENV' || key === 'PORT' || key === 'DATABASE_URL') {
+      console.log(`${key}:`, key.includes('PASS') || key === 'DB_PASSWORD' || key === 'DB_USER' ? '***' : process.env[key]);
+    }
+  });
+
+  // Configuração para produção (usando DATABASE_URL ou variáveis individuais)
+  if (isProduction) {
+    if (process.env.DATABASE_URL) {
+      console.log('Usando configuração de produção com DATABASE_URL');
+      return {
+        type: 'postgres',
+        url: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false },
+        extra: {
+          ssl: { rejectUnauthorized: false }
+        }
+      };
+    }
+    
+    // Se não tiver DATABASE_URL, tenta usar as variáveis individuais do Railway
+    console.log('Usando configuração de produção com variáveis individuais do Railway');
+    const dbConfig: DatabaseConfig = {
       type: 'postgres',
-      url: process.env.DATABASE_URL,
+      host: 'postgres_db', // Nome do container do PostgreSQL
+      port: parseInt(process.env.PORT || '5432', 10),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME || 'sistema_comandas',
       ssl: { rejectUnauthorized: false },
       extra: {
         ssl: { rejectUnauthorized: false }
       }
     };
+    
+    console.log('Configuração do banco de dados (sem senha):', {
+      ...dbConfig,
+      password: '***',
+      extra: { ssl: { rejectUnauthorized: false } }
+    });
+    
+    return dbConfig;
   }
 
   // Configuração para desenvolvimento local
