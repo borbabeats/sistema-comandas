@@ -1,0 +1,22 @@
+[build]
+builder = "nixpacks"
+
+[build.requires]
+node = "18.x"
+
+[build.build_command]
+command = "cd backend && npm install && npm run build"
+
+[build.start_command]
+command = "cd backend && npm run start:prod"
+
+[deploy]
+start_command = "cd backend && npm run start:prod"
+restart_policy = "on-failure"
+restart_attempts = 10
+
+[deploy.checks]
+enabled = true
+timeout = 180
+interval = 30
+start_period = 10

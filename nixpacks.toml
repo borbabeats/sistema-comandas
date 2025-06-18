@@ -1,0 +1,51 @@
+[phases.setup]
+cmds = [
+    "cd backend && npm install",
+    "cd frontend && npm install"
+]
+
+[phases.build]
+cmds = [
+    "cd backend && npm run build",
+    "cd frontend && npm run build"
+]
+
+[start]
+cmd = "cd backend && npm run start:prod"
+
+[build.environment]
+NODE_VERSION = "18.x"
+NPM_VERSION = "9.x"
+
+[build.args]
+NIXPACKS_NODE_VERSION = "18"
+
+[build.prebuild]
+cmds = [
+    "echo 'Running prebuild commands...'"
+]
+
+[build.postbuild]
+cmds = [
+    "echo 'Build completed successfully!'
+]
+
+# Define os diretórios que contêm os arquivos do projeto
+[build.include]
+paths = [
+    "backend/**/*",
+    "frontend/**/*",
+    "package*.json"
+]
+
+# Define os arquivos que devem ser ignorados
+[build.exclude]
+paths = [
+    "node_modules",
+    ".git",
+    ".github",
+    "dist",
+    "build",
+    "*.log",
+    "*.tmp"
+]
