@@ -2,6 +2,7 @@ services:
   - type: web
     name: sistema-comandas-backend
     env: node
+    rootDir: backend
     repo: <seu-repositorio-git>
     buildCommand: ./render-build.sh
     startCommand: npm run migration:run && npm start
@@ -10,12 +11,14 @@ services:
         value: production
       - key: NPM_CONFIG_PRODUCTION
         value: "false"
+      - key: NODE_VERSION
+        value: 18
       - key: DATABASE_URL
         value: postgres://${DB_USER}:${DB_PASSWORD}@postgres_db:5432/${DB_NAME}
       - key: DB_USER
         value: admin
       - key: DB_PASSWORD
-        sync: false # Defina no painel do Render
+        sync: false
       - key: DB_NAME
         value: comandas
       - key: PORT
@@ -24,6 +27,7 @@ services:
   - type: web
     name: postgres_db
     env: docker
+    rootDir: docker
     dockerCommand: docker-compose up db
     envVars:
       - key: DB_USER
@@ -39,6 +43,7 @@ services:
   - type: web
     name: adminer_pg
     env: docker
+    rootDir: docker
     dockerCommand: docker-compose up adminer
     envVars:
       - key: ADMINER_DEFAULT_SERVER
