@@ -46,9 +46,22 @@ function getDatabaseConfig(): DatabaseConfig {
   if (isProduction) {
     if (process.env.DATABASE_URL) {
       console.log('Usando configuração de produção com DATABASE_URL');
+      
+      // Se a DATABASE_URL contiver placeholders, substitua-os pelos valores reais
+      let databaseUrl = process.env.DATABASE_URL;
+      if (databaseUrl.includes('${')) {
+        console.log('Substituindo placeholders na DATABASE_URL');
+        databaseUrl = databaseUrl
+          .replace('${DB_USER}', process.env.DB_USER || '')
+          .replace('${DB_PASSWORD}', process.env.DB_PASSWORD || '')
+          .replace('${PGHOST}', process.env.PGHOST || 'postgres_db')
+          .replace('${DB_NAME}', process.env.DB_NAME || 'comandas');
+        console.log('DATABASE_URL após substituição:', databaseUrl.replace(/:([^:]+)@/, ':***@'));
+      }
+      
       return {
         type: 'postgres',
-        url: process.env.DATABASE_URL,
+        url: databaseUrl,
         ssl: { rejectUnauthorized: false },
         extra: {
           ssl: { rejectUnauthorized: false }
