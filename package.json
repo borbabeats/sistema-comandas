@@ -2,22 +2,13 @@
   "name": "sistema-comandas",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "backend",
-    "frontend"
-  ],
   "scripts": {
-    "start": "cd backend && npm start",
-    "build": "cd backend && npm install && npm run build && cd ../frontend && npm install && npm run build",
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "npm run build"
+    "start": "node backend/dist/server.js",
+    "build": "cd backend && npm install && npm run build"
   },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
   },
-  "dependencies": {
-    "concurrently": "^8.2.0"
-  }
+  "dependencies": {}
 }

@@ -1,17 +1,21 @@
+# Configuração para o Nixpacks
+
+# Define o diretório raiz do projeto
+[build]
+base = "./backend"
+
 [phases.setup]
 cmds = [
-    "cd backend && npm install",
-    "cd frontend && npm install"
+    "npm install"
 ]
 
 [phases.build]
 cmds = [
-    "cd backend && npm run build",
-    "cd frontend && npm run build"
+    "npm run build"
 ]
 
 [start]
-cmd = "cd backend && npm run start:prod"
+cmd = "npm run start:prod"
 
 [build.environment]
 NODE_VERSION = "18.x"
@@ -27,15 +31,13 @@ cmds = [
 
 [build.postbuild]
 cmds = [
-    "echo 'Build completed successfully!'
+    "echo 'Build completed successfully!'"
 ]
 
 # Define os diretórios que contêm os arquivos do projeto
 [build.include]
 paths = [
-    "backend/**/*",
-    "frontend/**/*",
-    "package*.json"
+    "**/*"
 ]
 
 # Define os arquivos que devem ser ignorados
