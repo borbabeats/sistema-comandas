@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Pinot Noir",
+        "description": "Light red wine with cherry and earthy undertones.",
+        "price": 13.25,
+        "type": "wine",
+        "info": "Alcoholic, 13% ABV, served by glass"
+    },
+    {
+        "name": "Sauvignon Blanc",
+        "description": "Refreshing white wine with citrus and green apple notes.",
+        "price": 10.99,
+        "type": "wine",
+        "info": "Alcoholic, 12% ABV, served by glass"
+    },
+    {
+        "name": "Merlot",
+        "description": "Smooth red wine with plum and chocolate flavors.",
+        "price": 12.75,
+        "type": "wine",
+        "info": "Alcoholic, 14% ABV, served by glass"
+    },
+    {
+        "name": "IPA Craft Beer",
+        "description": "Hoppy India Pale Ale with citrus and pine notes.",
+        "price": 7.50,
+        "type": "beer",
+        "info": "Alcoholic, 6.5% ABV, 12 oz"
+    },
+    {
+        "name": "Lager Beer",
+        "description": "Crisp and light beer with a clean, refreshing finish.",
+        "price": 6.25,
+        "type": "beer",
+        "info": "Alcoholic, 5% ABV, 12 oz"
+    }
+]

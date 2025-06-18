@@ -6,18 +6,30 @@ const { User } = require("../src/entities/User");
 const { Order } = require("../src/entities/Order");
 
 function getDatabaseConfig() {
-  // Configuração padrão para desenvolvimento local com Docker
+  // Configuração para Docker e Railway
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  // Se estiver no Railway, usa a URL de conexão fornecida por eles
+  if (process.env.DATABASE_URL) {
+    return {
+      url: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    };
+  }
+
+  // Configuração para desenvolvimento local
   const defaultConfig = {
-    host: process.env.DB_HOST || 'localhost',
+    host: 'localhost',  // Alterado de 'db' para 'localhost' para conectar do host
     port: parseInt(process.env.DB_PORT || '5432', 10),
     username: process.env.DB_USERNAME || 'admin',
     password: process.env.DB_PASSWORD || 'admin',
     database: process.env.DB_NAME || 'comandas',
-    ssl: false
+    ssl: isProduction ? { rejectUnauthorized: false } : false
   };
 
   // Log da configuração (sem senha)
   console.log('Database connection config:', {
+    
     ...defaultConfig,
     password: defaultConfig.password ? '***' : 'not set'
   });

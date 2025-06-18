@@ -1,24 +1,21 @@
-import { IsString, IsOptional, IsBoolean, IsInt, Min, IsIn } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsUUID, IsIn } from 'class-validator';
 
 export class UpdateOrderDto {
   @IsString()
   @IsOptional()
   clientName?: string;
 
-  @IsInt()
-  @Min(1, { message: 'ID do prato inválido' })
+  @IsUUID()
   @IsOptional()
-  plateId?: number | null;
+  plateId?: string | null;
 
-  @IsInt()
-  @Min(1, { message: 'ID da bebida inválido' })
+  @IsUUID()
   @IsOptional()
-  beverageId?: number | null;
+  beverageId?: string | null;
 
-  @IsInt()
-  @Min(1, { message: 'ID da sobremesa inválido' })
+  @IsUUID()
   @IsOptional()
-  dessertId?: number | null;
+  dessertId?: string | null;
 
   @IsBoolean()
   @IsOptional()

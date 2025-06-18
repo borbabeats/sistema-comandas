@@ -2,23 +2,34 @@ import { DataSource } from 'typeorm';
 import { User, Plate, Dessert, Beverage, Order } from '../entities';
 
 function getDatabaseConfig() {
-  // Configuração padrão para desenvolvimento local com Docker
-  const defaultConfig = {
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  // Se estiver em produção e tiver a URL do banco (ex: Railway, Heroku)
+  if (isProduction && process.env.DATABASE_URL) {
+    return {
+      url: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
+    };
+  }
+
+  // Configuração para desenvolvimento local
+  const config = {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '5432', 10),
     username: process.env.DB_USERNAME || 'admin',
     password: process.env.DB_PASSWORD || 'admin',
     database: process.env.DB_NAME || 'comandas',
-    ssl: false
+    ssl: isProduction ? { rejectUnauthorized: false } : false
   };
 
   // Log da configuração (sem senha)
   console.log('Database connection config:', {
-    ...defaultConfig,
-    password: defaultConfig.password ? '***' : 'not set'
+    ...config,
+    password: config.password ? '***' : 'not set',
+    ssl: isProduction ? 'enabled' : 'disabled'
   });
 
-  return defaultConfig;
+  return config;
 }
 
 const dbConfig = getDatabaseConfig();

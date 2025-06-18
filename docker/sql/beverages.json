@@ -1,0 +1,20 @@
+[
+    {"name": "Pinot Noir", "description": "Light red wine with cherry and earthy undertones.", "price": 13.25, "info": "Alcoholic, 13% ABV, served by glass", "type": "wine"},
+    {"name": "Sauvignon Blanc", "description": "Refreshing white wine with citrus and green apple notes.", "price": 10.99, "info": "Alcoholic, 12% ABV, served by glass", "type": "wine"},
+    {"name": "Merlot", "description": "Smooth red wine with plum and chocolate flavors.", "price": 12.75, "info": "Alcoholic, 14% ABV, served by glass", "type": "wine"},
+    {"name": "IPA Craft Beer", "description": "Hoppy India Pale Ale with citrus and pine notes.", "price": 7.50, "info": "Alcoholic, 6.5% ABV, 12 oz", "type": "beer"},
+    {"name": "Lager Beer", "description": "Crisp and light beer with a clean, refreshing finish.", "price": 6.25, "info": "Alcoholic, 5% ABV, 12 oz", "type": "beer"},
+    {"name": "Stout Beer", "description": "Dark, rich beer with coffee and chocolate undertones.", "price": 7.75, "info": "Alcoholic, 6% ABV, 12 oz", "type": "beer"},
+    {"name": "Pale Ale", "description": "Balanced ale with floral hops and a malty backbone.", "price": 6.99, "info": "Alcoholic, 5.5% ABV, 12 oz", "type": "beer"},
+    {"name": "Wheat Beer", "description": "Light, cloudy beer with banana and clove flavors.", "price": 6.50, "info": "Alcoholic, 4.8% ABV, 12 oz", "type": "beer"},
+    {"name": "Mojito", "description": "Refreshing cocktail with rum, mint, lime, and soda water.", "price": 9.99, "info": "Alcoholic, 10% ABV, 10 oz", "type": "cocktail"},
+    {"name": "Margarita", "description": "Classic cocktail with tequila, lime, and triple sec, served on the rocks.", "price": 10.25, "info": "Alcoholic, 12% ABV, 10 oz", "type": "cocktail"},
+    {"name": "Piña Colada", "description": "Tropical blend of rum, pineapple, and coconut cream.", "price": 10.50, "info": "Alcoholic, 9% ABV, 12 oz", "type": "cocktail"},
+    {"name": "Cosmopolitan", "description": "Vodka, cranberry juice, lime, and triple sec, shaken and served chilled.", "price": 9.75, "info": "Alcoholic, 11% ABV, 8 oz", "type": "cocktail"},
+    {"name": "Old Fashioned", "description": "Whiskey cocktail with bitters, sugar, and an orange twist.", "price": 11.00, "info": "Alcoholic, 14% ABV, 8 oz", "type": "cocktail"},
+    {"name": "Cola", "description": "Classic carbonated cola, served chilled.", "price": 3.50, "info": "Non-alcoholic, caffeinated, 12 oz", "type": "soda"},
+    {"name": "Lemon-Lime Soda", "description": "Refreshing citrus-flavored sparkling soda.", "price": 3.25, "info": "Non-alcoholic, 12 oz", "type": "soda"},
+    {"name": "Ginger Ale", "description": "Light, spicy ginger-flavored soda, served cold.", "price": 3.50, "info": "Non-alcoholic, 12 oz", "type": "soda"},
+    {"name": "Orange Juice", "description": "Freshly squeezed orange juice, packed with vitamin C.", "price": 4.75, "info": "Non-alcoholic, 10 oz, fresh", "type": "juice"},
+    {"name": "Pineapple Juice", "description": "Sweet and tangy natural pineapple juice.", "price": 4.99, "info": "Non-alcoholic, 10 oz, fresh", "type": "juice"}
+]

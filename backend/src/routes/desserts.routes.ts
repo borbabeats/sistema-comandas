@@ -105,11 +105,7 @@ router.get('/', async (_req: ExpressRequest, res: ExpressResponse) => {
 // Buscar uma sobremesa por ID
 router.get<{ id: string }>('/:id', async (req: ExpressRequest, res: ExpressResponse) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      res.status(400).json({ message: 'ID inválido' });
-      return;
-    }
+    const id = req.params.id;
 
     const dessert = await AppDataSource.getRepository(Dessert).findOne({ where: { id } });
     if (!dessert) {
@@ -126,11 +122,7 @@ router.get<{ id: string }>('/:id', async (req: ExpressRequest, res: ExpressRespo
 // Atualizar uma sobremesa
 router.patch<{ id: string }, any, UpdateDessertDto>('/:id', validateRequest(UpdateDessertDto), async (req: ExpressRequest, res: ExpressResponse) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      res.status(400).json({ message: 'ID inválido' });
-      return;
-    }
+    const id = req.params.id;
 
     const dessert = await AppDataSource.getRepository(Dessert).findOne({ where: { id } });
     if (!dessert) {
@@ -160,11 +152,7 @@ router.patch<{ id: string }, any, UpdateDessertDto>('/:id', validateRequest(Upda
 // Deletar uma sobremesa
 router.delete<{ id: string }>('/:id', async (req: ExpressRequest, res: ExpressResponse) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      res.status(400).json({ message: 'ID inválido' });
-      return;
-    }
+    const id = req.params.id;
 
     const dessert = await AppDataSource.getRepository(Dessert).findOne({ where: { id } });
     if (!dessert) {

@@ -45,6 +45,27 @@ npm run build
 npm start
 ```
 
+### Database Seeding
+
+Para popular o banco de dados com dados iniciais (bebidas, sobremesas e pratos), execute:
+
+```bash
+npm run seed
+```
+
+Este comando irá:
+1. Conectar-se ao banco de dados PostgreSQL
+2. Limpar as tabelas `beverages`, `desserts` e `plates`
+3. Popular as tabelas com os dados dos arquivos JSON na raiz do projeto
+4. Mostrar mensagens de log durante o processo
+
+Certifique-se de que os seguintes arquivos estejam presentes na raiz do projeto:
+- `beverages.json`
+- `desserts.json`
+- `plates.json`
+
+**Nota:** Este comando irá apagar todos os dados existentes nas tabelas antes de inserir os dados de seed.
+
 ## Project Structure
 
 ```

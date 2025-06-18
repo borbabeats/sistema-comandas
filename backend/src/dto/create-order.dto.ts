@@ -1,24 +1,21 @@
-import { IsString, IsOptional, IsBoolean, IsInt, Min, IsNotEmpty } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsUUID, IsNotEmpty } from 'class-validator';
 
 export class CreateOrderDto {
   @IsString()
   @IsNotEmpty({ message: 'O nome do cliente é obrigatório' })
   clientName!: string;
 
-  @IsInt()
-  @Min(1, { message: 'ID do prato inválido' })
+  @IsUUID()
   @IsOptional()
-  plateId?: number;
+  plateId?: string;
 
-  @IsInt()
-  @Min(1, { message: 'ID da bebida inválido' })
+  @IsUUID()
   @IsOptional()
-  beverageId?: number;
+  beverageId?: string;
 
-  @IsInt()
-  @Min(1, { message: 'ID da sobremesa inválido' })
+  @IsUUID()
   @IsOptional()
-  dessertId?: number;
+  dessertId?: string;
 
   @IsBoolean()
   @IsOptional()

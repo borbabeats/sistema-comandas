@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { AppDataSource } from '../config/database';
-import { Plate, FoodType } from '../entities/Plate';
-import { validate, IsString, IsNumber, IsOptional, IsEnum, IsNotEmpty, IsPositive } from 'class-validator';
+import { Plate } from '../entities/Plate';
+import { validate, IsString, IsNumber, IsOptional, IsArray, IsNotEmpty, IsPositive } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { handleError } from './index';
 
@@ -25,9 +25,10 @@ class CreatePlateDto {
   @IsOptional()
   info?: string;
 
-  @IsEnum(FoodType, { message: 'Invalid food type' })
-  @IsNotEmpty({ message: 'Type is required' })
-  type!: FoodType;
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  type?: string[];
 }
 
 // DTO para atualização de pratos
@@ -49,9 +50,10 @@ class UpdatePlateDto {
   @IsOptional()
   info?: string;
 
-  @IsEnum(FoodType, { message: 'Invalid food type' })
+  @IsArray()
+  @IsString({ each: true })
   @IsOptional()
-  type?: FoodType;
+  type?: string[];
 }
 
 // Middleware para validação de DTOs
@@ -110,12 +112,8 @@ router.get('/', async (_req: Request, res: Response) => {
 // Buscar um prato por ID
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params['id']);
-    if (isNaN(id)) {
-      res.status(400).json({ message: 'ID inválido' });
-      return;
-    }
-
+    const id = req.params['id'];
+    
     const plate = await AppDataSource.getRepository(Plate).findOne({ where: { id } });
     if (!plate) {
       res.status(404).json({ message: 'Prato não encontrado' });
@@ -131,11 +129,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Atualizar um prato existente
 router.put('/:id', validateRequest(UpdatePlateDto), async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params['id']);
-    if (isNaN(id)) {
-      res.status(400).json({ message: 'ID inválido' });
-      return;
-    }
+    const id = req.params['id'];
 
     const plate = await AppDataSource.getRepository(Plate).findOne({ where: { id } });
     if (!plate) {
@@ -161,11 +155,7 @@ router.put('/:id', validateRequest(UpdatePlateDto), async (req: Request, res: Re
 // Deletar um prato
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params['id']);
-    if (isNaN(id)) {
-      res.status(400).json({ message: 'ID inválido' });
-      return;
-    }
+    const id = req.params['id'];
 
     const plate = await AppDataSource.getRepository(Plate).findOne({ where: { id } });
     if (!plate) {

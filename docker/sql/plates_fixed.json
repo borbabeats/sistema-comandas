@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Chicken Parmesan",
+    "description": "Breaded chicken cutlet topped with marinara and melted mozzarella.",
+    "price": 16.75,
+    "info": "Contains gluten, 30 min prep",
+    "type": ["white meat", "pasta"]
+  },
+  {
+    "name": "Vegetarian Lasagna",
+    "description": "Layers of pasta, ricotta, spinach, and marinara sauce.",
+    "price": 14.25,
+    "info": "Vegetarian, 35 min prep",
+    "type": ["vegetarian", "pasta"]
+  },
+  {
+    "name": "Shrimp Scampi",
+    "description": "Succulent shrimp sautéed in garlic, butter, and white wine.",
+    "price": 19.80,
+    "info": "Gluten-free, 15 min prep",
+    "type": ["seafood"]
+  },
+  {
+    "name": "Pork Ribs",
+    "description": "Slow-cooked pork ribs with a tangy BBQ sauce.",
+    "price": 22.00,
+    "info": "Contains gluten, 2 hr prep",
+    "type": ["red meat"]
+  },
+  {
+    "name": "Mushroom Risotto",
+    "description": "Creamy risotto with wild mushrooms and parmesan cheese.",
+    "price": 15.50,
+    "info": "Vegetarian, gluten-free, 40 min prep",
+    "type": ["vegetarian"]
+  }
+]

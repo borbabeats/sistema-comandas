@@ -1,21 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { IsString, IsNumber, IsOptional, IsIn, IsPositive } from 'class-validator';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { IsString, IsNumber, IsOptional, IsPositive, IsArray } from 'class-validator';
 
-export enum FoodType {
-  SEAFOOD = 'seafood',
-  RED_MEAT = 'red meat',
-  WHITE_MEAT = 'white meat',
-  VEGETARIAN = 'vegetarian',
-  PASTA = 'pasta',
-  SALAD = 'salad',
-  SANDWICH = 'sandwich',
-  OTHER = 'other'
-}
+// Removendo o enum FoodType já que estamos usando um array de strings
 
 @Entity('plates')
 export class Plate {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column()
   @IsString()
@@ -35,17 +26,15 @@ export class Plate {
   @IsOptional()
   info?: string;
 
-  @Column({
-    type: 'enum',
-    enum: FoodType,
-    default: FoodType.OTHER
-  })
-  @IsIn(Object.values(FoodType))
-  type!: FoodType;
+  @Column('varchar', { array: true, default: '{}' })
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  type?: string[];
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt!: Date;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
+  created_at!: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-  updatedAt!: Date;
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
+  updated_at!: Date;
 }

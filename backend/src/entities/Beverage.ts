@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { IsString, IsNumber, IsOptional, IsIn } from 'class-validator';
 
 export enum BeverageType {
@@ -6,13 +6,14 @@ export enum BeverageType {
   BEER = 'beer',
   COCKTAIL = 'cocktail',
   SODA = 'soda',
-  JUICE = 'juice'
+  JUICE = 'juice',
+  OTHER = 'other'
 }
 
 @Entity('beverages')
 export class Beverage {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column()
   @IsString()
@@ -26,7 +27,7 @@ export class Beverage {
   @IsNumber()
   price!: number;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar', length: 50, default: 'other' })
   @IsIn(Object.values(BeverageType))
   type!: BeverageType;
 
@@ -35,9 +36,9 @@ export class Beverage {
   @IsOptional()
   info?: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt!: Date;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
+  created_at!: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-  updatedAt!: Date;
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
+  updated_at!: Date;
 }

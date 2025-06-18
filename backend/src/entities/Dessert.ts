@@ -1,10 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { IsString, IsNumber, IsOptional, IsPositive } from 'class-validator';
 
 @Entity('desserts')
 export class Dessert {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column()
   @IsString()
@@ -24,9 +24,9 @@ export class Dessert {
   @IsOptional()
   info?: string;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt!: Date;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
+  created_at!: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-  updatedAt!: Date;
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
+  updated_at!: Date;
 }

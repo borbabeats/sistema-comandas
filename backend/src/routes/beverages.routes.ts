@@ -114,11 +114,7 @@ router.get('/', async (_req, res) => {
 // Buscar uma bebida por ID
 router.get<ParamsDictionary, any, any>('/:id', async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      res.status(400).json({ message: 'ID inválido' });
-      return;
-    }
+    const id = req.params.id;
 
     const beverage = await AppDataSource.getRepository(Beverage).findOne({ where: { id } });
     if (!beverage) {
@@ -135,11 +131,7 @@ router.get<ParamsDictionary, any, any>('/:id', async (req: Request, res: Respons
 // Atualizar uma bebida
 router.patch<{ id: string }, {}, UpdateBeverageDto>('/:id', validateRequest(UpdateBeverageDto), async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      res.status(400).json({ message: 'ID inválido' });
-      return;
-    }
+    const id = req.params.id;
 
     const beverage = await AppDataSource.getRepository(Beverage).findOne({ where: { id } });
     if (!beverage) {
@@ -170,11 +162,7 @@ router.patch<{ id: string }, {}, UpdateBeverageDto>('/:id', validateRequest(Upda
 // Deletar uma bebida
 router.delete<{ id: string }>('/:id', async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      res.status(400).json({ message: 'ID inválido' });
-      return;
-    }
+    const id = req.params.id;
 
     const beverage = await AppDataSource.getRepository(Beverage).findOne({ where: { id } });
     if (!beverage) {

@@ -118,7 +118,7 @@ const listOrders: AsyncRequestHandler = async (_, res, next) => {
   try {
     const orders = await AppDataSource.getRepository(Order).find({
       relations: ['plate', 'beverage', 'dessert'],
-      order: { createdAt: 'DESC' }
+      order: { created_at: 'DESC' }
     });
     res.json(orders);
     next();
@@ -130,11 +130,7 @@ const listOrders: AsyncRequestHandler = async (_, res, next) => {
 // Get order by ID
 const getOrderById: AsyncRequestHandler = async (req, res, next) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      res.status(400).json({ message: 'ID inválido' });
-      return next();
-    }
+    const id = req.params.id;
 
     const order = await AppDataSource.getRepository(Order).findOne({
       where: { id },
@@ -179,10 +175,7 @@ router.get(
 // Update an order
 const updateOrder: AsyncRequestHandler = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      return res.status(400).json({ message: 'ID inválido' });
-    }
+    const id = req.params.id;
 
     const order = await AppDataSource.getRepository(Order).findOne({
       where: { id },
@@ -251,7 +244,8 @@ const updateOrder: AsyncRequestHandler = async (req, res) => {
       });
     }
 
-    order.updatedAt = new Date();
+    // Atualiza a data de atualização
+    order.updated_at = new Date();
     const updatedOrder = await AppDataSource.getRepository(Order).save(order);
     
     // Recarregar com relacionamentos atualizados
@@ -277,10 +271,7 @@ router.patch<{ id: string }>(
 // Delete an order
 const deleteOrder: AsyncRequestHandler = async (req, res) => {
   try {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      return res.status(400).json({ message: 'ID inválido' });
-    }
+    const id = req.params.id;
 
     const order = await AppDataSource.getRepository(Order).findOne({ where: { id } });
     if (!order) {
