@@ -51,11 +51,10 @@ export interface Order {
   updatedAt: string;
 }
 
-// Use production URL by default, with fallback to environment variable and then localhost
-const baseURL = process.env.REACT_APP_API_URL || 
-                'https://sistema-comandas-production.up.railway.app/api' || 
-                'http://localhost:5000/api';
+// Use environment variable or default to localhost
+const baseURL = import.meta.env.VITE_API_URL;
 
+// Log the API URL being used (will be shown in browser's console)
 console.log('Using API URL:', baseURL);
 
 const api = axios.create({

@@ -1,30 +1,42 @@
 services:
-  app:
-    build: .
-    ports:
-      - "5000:5000"  # Map port 5000 of the container to port 5000 on the host
-    environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_USER=admin
-      - DB_PASSWORD=admin
-      - DB_NAME=comandas
-      - DATABASE_URL=postgres://admin:admin@db:5432/comandas
-    depends_on:
-       - db
-
-   db:
-    image: postgres:13  # Use the official PostgreSQL image
+  db:
+    image: postgres:13
+    container_name: postgres_db
     restart: always
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: comandas
     volumes:
-       - postgres_data:/var/lib/postgresql/data
-       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5432:5432"  # Map port 5432 of the container to port 5432 on the host
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d comandas"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer_pg
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   postgres_data:

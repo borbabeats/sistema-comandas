@@ -78,9 +78,14 @@ const validateRequest = <T extends object>(dtoClass: new () => T) => {
 };
 
 // Criar uma nova bebida
-router.post<{}, {}, CreateBeverageDto>('/', validateRequest(CreateBeverageDto), async (req, res) => {
+router.post<{}, {}, CreateBeverageDto>('/', validateRequest(CreateBeverageDto), async (req: Request, res: Response) => {
   try {
-    const { name, description, price, type, info } = req.validatedBody as CreateBeverageDto;
+    const validatedBody = (req as any).validatedBody as CreateBeverageDto;
+    if (!validatedBody) {
+      res.status(400).json({ message: 'Dados inválidos' });
+      return;
+    }
+    const { name, description, price, type, info } = validatedBody;
     
     const beverage = new Beverage();
     beverage.name = name;
@@ -128,7 +133,7 @@ router.get<ParamsDictionary, any, any>('/:id', async (req: Request, res: Respons
 });
 
 // Atualizar uma bebida
-router.patch<{ id: string }, {}, UpdateBeverageDto>('/:id', validateRequest(UpdateBeverageDto), async (req, res, next) => {
+router.patch<{ id: string }, {}, UpdateBeverageDto>('/:id', validateRequest(UpdateBeverageDto), async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
@@ -142,7 +147,12 @@ router.patch<{ id: string }, {}, UpdateBeverageDto>('/:id', validateRequest(Upda
       return;
     }
 
-    const { name, description, price, type, info } = req.validatedBody as UpdateBeverageDto;
+    const validatedBody = (req as any).validatedBody as UpdateBeverageDto;
+    if (!validatedBody) {
+      res.status(400).json({ message: 'Dados inválidos' });
+      return;
+    }
+    const { name, description, price, type, info } = validatedBody;
 
     if (name !== undefined) beverage.name = name;
     if (description !== undefined) beverage.description = description;
@@ -153,7 +163,7 @@ router.patch<{ id: string }, {}, UpdateBeverageDto>('/:id', validateRequest(Upda
     const updatedBeverage = await AppDataSource.getRepository(Beverage).save(beverage);
     res.json(updatedBeverage);
   } catch (error) {
-    next(error);
+    handleError(res, error, 'Falha ao deletar bebida');
   }
 });
 

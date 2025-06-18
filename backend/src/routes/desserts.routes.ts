@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request as ExpressRequest, Response as ExpressResponse } from 'express';
 import { AppDataSource } from '../config/database';
 import { Dessert } from '../entities/Dessert';
 import { validate, IsString, IsNumber, IsOptional, IsNotEmpty, IsPositive } from 'class-validator';
@@ -48,7 +48,7 @@ class UpdateDessertDto {
 
 // Middleware para validação de DTOs
 const validateRequest = <T extends object>(dtoClass: new () => T) => {
-  return async (req: any, res: any, next: Function) => {
+  return async (req: ExpressRequest, res: ExpressResponse, next: Function) => {
     try {
       const dto = plainToInstance(dtoClass, req.body);
       const errors = await validate(dto as object);
@@ -57,10 +57,11 @@ const validateRequest = <T extends object>(dtoClass: new () => T) => {
         const errorMessages = errors.flatMap(error => 
           error.constraints ? Object.values(error.constraints) : []
         );
-        return res.status(400).json({ errors: errorMessages });
+        res.status(400).json({ errors: errorMessages });
+        return;
       }
 
-      req.validatedBody = dto;
+      (req as any).validatedBody = dto;
       next();
     } catch (error) {
       handleError(res, error, 'Falha na validação dos dados');
@@ -69,9 +70,14 @@ const validateRequest = <T extends object>(dtoClass: new () => T) => {
 };
 
 // Criar uma nova sobremesa
-router.post<{}, {}, CreateDessertDto>('/', validateRequest(CreateDessertDto), async (req, res) => {
+router.post<{}, any, CreateDessertDto>('/', validateRequest(CreateDessertDto), async (req: ExpressRequest, res: ExpressResponse) => {
   try {
-    const { name, description, price, info } = req.validatedBody as CreateDessertDto;
+    const validatedBody = (req as any).validatedBody as CreateDessertDto;
+    if (!validatedBody) {
+      res.status(400).json({ message: 'Dados inválidos' });
+      return;
+    }
+    const { name, description, price, info } = validatedBody;
     
     const dessert = new Dessert();
     dessert.name = name;
@@ -87,7 +93,7 @@ router.post<{}, {}, CreateDessertDto>('/', validateRequest(CreateDessertDto), as
 });
 
 // Listar todas as sobremesas
-router.get('/', async (_req, res) => {
+router.get('/', async (_req: ExpressRequest, res: ExpressResponse) => {
   try {
     const desserts = await AppDataSource.getRepository(Dessert).find();
     res.json(desserts);
@@ -97,7 +103,7 @@ router.get('/', async (_req, res) => {
 });
 
 // Buscar uma sobremesa por ID
-router.get<{ id: string }>('/:id', async (req, res) => {
+router.get<{ id: string }>('/:id', async (req: ExpressRequest, res: ExpressResponse) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
@@ -118,7 +124,7 @@ router.get<{ id: string }>('/:id', async (req, res) => {
 });
 
 // Atualizar uma sobremesa
-router.patch<{ id: string }, {}, UpdateDessertDto>('/:id', validateRequest(UpdateDessertDto), async (req, res) => {
+router.patch<{ id: string }, any, UpdateDessertDto>('/:id', validateRequest(UpdateDessertDto), async (req: ExpressRequest, res: ExpressResponse) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
@@ -132,7 +138,12 @@ router.patch<{ id: string }, {}, UpdateDessertDto>('/:id', validateRequest(Updat
       return;
     }
 
-    const { name, description, price, info } = req.validatedBody as UpdateDessertDto;
+    const validatedBody = (req as any).validatedBody as UpdateDessertDto;
+    if (!validatedBody) {
+      res.status(400).json({ message: 'Dados inválidos' });
+      return;
+    }
+    const { name, description, price, info } = validatedBody;
 
     if (name !== undefined) dessert.name = name;
     if (description !== undefined) dessert.description = description;
@@ -147,7 +158,7 @@ router.patch<{ id: string }, {}, UpdateDessertDto>('/:id', validateRequest(Updat
 });
 
 // Deletar uma sobremesa
-router.delete<{ id: string }>('/:id', async (req, res) => {
+router.delete<{ id: string }>('/:id', async (req: ExpressRequest, res: ExpressResponse) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
