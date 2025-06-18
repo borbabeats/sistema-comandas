@@ -25,6 +25,10 @@
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.24"
   },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
   "devDependencies": {
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
