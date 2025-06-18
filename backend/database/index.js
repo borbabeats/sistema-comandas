@@ -44,10 +44,12 @@ function getDatabaseConfig() {
       let databaseUrl = process.env.DATABASE_URL;
       if (databaseUrl.includes('${')) {
         console.log('Substituindo placeholders na DATABASE_URL');
+        // Tenta usar PGHOST se existir, senão tenta localhost (padrão do Railway)
+        const dbHost = process.env.PGHOST || 'localhost';
         databaseUrl = databaseUrl
           .replace('${DB_USER}', process.env.DB_USER || '')
           .replace('${DB_PASSWORD}', process.env.DB_PASSWORD || '')
-          .replace('${PGHOST}', process.env.PGHOST || 'postgres_db')
+          .replace('${PGHOST}', dbHost)
           .replace('${DB_NAME}', process.env.DB_NAME || 'comandas');
         console.log('DATABASE_URL após substituição:', databaseUrl.replace(/:([^:]+)@/, ':***@'));
       }
