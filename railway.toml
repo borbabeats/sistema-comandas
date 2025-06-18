@@ -1,18 +1,17 @@
 [build]
 builder = "nixpacks"
-root = "./backend"
 
 [build.requires]
 node = "18.x"
 
 [build.build_command]
-command = "npm install && npm run build"
+command = "cd backend && npm install && npm run build"
 
 [build.start_command]
-command = "npm run start:prod"
+command = "cd backend && npm start"
 
 [deploy]
-start_command = "npm run start:prod"
+start_command = "cd backend && npm start"
 restart_policy = "on-failure"
 restart_attempts = 10
 
