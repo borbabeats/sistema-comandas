@@ -148,10 +148,16 @@ const KitchenPage: React.FC = () => {
           });
         }
         
+        // Extrai o status do campo info se existir
+        let status = 'pending';
+        if (order.info && typeof order.info === 'string' && order.info.startsWith('status:')) {
+          status = order.info.replace('status:', '').trim();
+        }
+        
         return {
           ...order,
           items,
-          status: order.status || 'pending' // Define 'pending' como status padrão se não existir
+          status
         };
       });
       
@@ -237,7 +243,9 @@ const KitchenPage: React.FC = () => {
 
       <Tabs variant="enclosed" isLazy>
         <TabList>
-          {Object.entries(statusConfig).map(([key, { label, icon, color }]) => (
+          {Object.entries(statusConfig)
+            .filter(([key]) => key !== 'default')
+            .map(([key, { label, icon, color }]) => (
             <Tab 
               key={key}
               _selected={{ color: 'white', bg: `${color}.500` }}

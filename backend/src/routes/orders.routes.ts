@@ -37,8 +37,8 @@ const validateRequest = <T extends object>(dtoClass: new () => T) => {
         return;
       }
 
-      // Check if at least one item is present for order-related DTOs
-      if (dto instanceof CreateOrderDto || dto instanceof UpdateOrderDto) {
+      // Check if at least one item is present for CreateOrderDto only
+      if (dto instanceof CreateOrderDto) {
         const hasItem = (dto as any).plateId !== undefined || 
                        (dto as any).beverageId !== undefined || 
                        (dto as any).dessertId !== undefined;
@@ -63,13 +63,13 @@ const validateRequest = <T extends object>(dtoClass: new () => T) => {
 
 // Create a new order
 const createOrder: AsyncRequestHandler = async (req, res) => {
-  const { clientName, plateId, beverageId, dessertId, isPaid, observations } = (req as any).validatedBody as CreateOrderDto;
+  const { clientName, plateId, beverageId, dessertId, isPaid, info } = (req as any).validatedBody as CreateOrderDto;
 
   try {
     const order = new Order();
     order.clientName = clientName;
     order.isPaid = isPaid || false;
-    order.observations = observations !== undefined ? observations : null;
+    order.info = info !== undefined ? info : null;
 
     if (plateId) {
       const plate = await AppDataSource.getRepository(Plate).findOne({ where: { id: plateId } });
@@ -186,7 +186,7 @@ const updateOrder: AsyncRequestHandler = async (req, res) => {
       return res.status(404).json({ message: 'Pedido não encontrado' });
     }
 
-    const { clientName, plateId, beverageId, dessertId, isPaid, status } = (req as any).validatedBody as UpdateOrderDto;
+    const { clientName, plateId, beverageId, dessertId, isPaid, info } = (req as any).validatedBody as UpdateOrderDto;
 
     if (clientName !== undefined) {
       order.clientName = clientName;
@@ -196,8 +196,8 @@ const updateOrder: AsyncRequestHandler = async (req, res) => {
       order.isPaid = isPaid;
     }
     
-    if (status !== undefined) {
-      order.status = status;
+    if (info !== undefined) {
+      order.info = info;
     }
 
     // Atualiza os relacionamentos se fornecidos
