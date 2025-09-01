@@ -21,11 +21,6 @@ function getDatabaseConfig() {
   console.log('PORT:', process.env.PORT || '3000 (padrão)');
   console.log('DATABASE_URL:', process.env.DATABASE_URL ? '*** Configurado ***' : 'Não configurado');
   
-  // Log das variáveis de ambiente do Railway
-  console.log('\n=== Variáveis do Railway ===');
-  console.log('DB_USER:', process.env.DB_USER ? '***' : 'Não configurado');
-  console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? '***' : 'Não configurado');
-  console.log('DB_NAME:', process.env.DB_NAME || 'Não configurado');
   
   // Log de todas as variáveis de ambiente (útil para depuração)
   console.log('\n=== Todas as Variáveis de Ambiente ===');
@@ -109,9 +104,9 @@ function getDatabaseConfig() {
   return {
     type: 'postgres',
     host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432'),
+    port: parseInt(process.env.DB_PORT || '5433'),
     username: process.env.DB_USERNAME || 'admin',
-    password: process.env.DB_PASSWORD,
+    password: process.env.DB_PASSWORD || 'admin123',
     database: process.env.DB_NAME || 'comandas',
     synchronize: false,
     logging: true,

@@ -24,6 +24,7 @@ const corsOptions = {
   origin: [
     'https://sistema-comandas-sage.vercel.app',
     'http://localhost:3000',  // For local development
+    'http://localhost:3001',  // Frontend port
     'http://localhost:5000'   // For local development
   ],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

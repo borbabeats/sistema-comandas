@@ -36,6 +36,11 @@ function getDatabaseConfig(): DatabaseConfig {
   
   // Log de todas as variáveis de ambiente (útil para depuração)
   console.log('\n=== Todas as Variáveis de Ambiente ===');
+  console.log('DB_HOST:', process.env.DB_HOST);
+  console.log('DB_PORT:', process.env.DB_PORT);
+  console.log('DB_USERNAME:', process.env.DB_USERNAME);
+  console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? 'DEFINIDA' : 'NÃO DEFINIDA');
+  console.log('DB_NAME:', process.env.DB_NAME);
   Object.keys(process.env).forEach(key => {
     if (key.startsWith('DB_') || key.startsWith('PG') || key === 'NODE_ENV' || key === 'PORT' || key === 'DATABASE_URL') {
       console.log(`${key}:`, key.includes('PASS') || key === 'DB_PASSWORD' || key === 'DB_USER' ? '***' : process.env[key]);
@@ -100,9 +105,9 @@ function getDatabaseConfig(): DatabaseConfig {
   const config: DatabaseConfig = {
     type: 'postgres',
     host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432', 10),
+    port: parseInt(process.env.DB_PORT || '5433', 10),
     username: process.env.DB_USERNAME || 'admin',
-    password: process.env.DB_PASSWORD || 'pa&@)s28',
+    password: process.env.DB_PASSWORD || 'admin123',
     database: process.env.DB_NAME || 'comandas',
     ssl: false
   };
