@@ -158,7 +158,7 @@ export const productService = {
 
   async updateOrderStatus(orderId: number, status: 'pending' | 'preparing' | 'ready' | 'delivered'): Promise<Order> {
     try {
-      const response = await api.patch(`/orders/${orderId}`, { status });
+      const response = await api.patch(`/orders/${orderId}`, { info: `status:${status}` });
       return response.data;
     } catch (error) {
       console.error('Erro ao atualizar status do pedido:', error);

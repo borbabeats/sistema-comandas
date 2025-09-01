@@ -24,7 +24,7 @@ class CreateBeverageDto {
 
   @IsEnum(BeverageType, { message: 'Invalid beverage type' })
   @IsNotEmpty({ message: 'Type is required' })
-  type!: BeverageType;
+  category!: BeverageType;
 
   @IsString()
   @IsOptional()
@@ -48,7 +48,7 @@ class UpdateBeverageDto {
 
   @IsEnum(BeverageType, { message: 'Invalid beverage type' })
   @IsOptional()
-  type?: BeverageType;
+  category?: BeverageType;
 
   @IsString()
   @IsOptional()
@@ -85,13 +85,13 @@ router.post<{}, {}, CreateBeverageDto>('/', validateRequest(CreateBeverageDto), 
       res.status(400).json({ message: 'Dados inválidos' });
       return;
     }
-    const { name, description, price, type, info } = validatedBody;
+    const { name, description, price, category, info } = validatedBody;
     
     const beverage = new Beverage();
     beverage.name = name;
     beverage.description = description;
     beverage.price = price;
-    beverage.type = type;
+    beverage.category = category;
     if (info) beverage.info = info;
     
     const savedBeverage = await AppDataSource.getRepository(Beverage).save(beverage);
@@ -144,12 +144,12 @@ router.patch<{ id: string }, {}, UpdateBeverageDto>('/:id', validateRequest(Upda
       res.status(400).json({ message: 'Dados inválidos' });
       return;
     }
-    const { name, description, price, type, info } = validatedBody;
+    const { name, description, price, category, info } = validatedBody;
 
     if (name !== undefined) beverage.name = name;
     if (description !== undefined) beverage.description = description;
     if (price !== undefined) beverage.price = price;
-    if (type !== undefined) beverage.type = type;
+    if (category !== undefined) beverage.category = category;
     if (info !== undefined) beverage.info = info;
 
     const updatedBeverage = await AppDataSource.getRepository(Beverage).save(beverage);

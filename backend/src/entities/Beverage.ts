@@ -27,9 +27,9 @@ export class Beverage {
   @IsNumber()
   price!: number;
 
-  @Column({ type: 'varchar', length: 50, default: 'other' })
+  @Column({ name: 'category', type: 'varchar', length: 50, default: 'other' })
   @IsIn(Object.values(BeverageType))
-  type!: BeverageType;
+  category!: BeverageType;
 
   @Column({ type: 'text', nullable: true })
   @IsString()

@@ -23,5 +23,5 @@ export class CreateOrderDto {
 
   @IsString()
   @IsOptional()
-  observations?: string;
+  info?: string;
 }

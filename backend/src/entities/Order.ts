@@ -9,7 +9,7 @@ export class Order {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ length: 100 })
+  @Column({ name: 'client_name', length: 100 })
   @IsString()
   @IsNotEmpty({ message: 'O nome do cliente é obrigatório' })
   clientName!: string;
@@ -47,15 +47,9 @@ export class Order {
   @IsOptional()
   dessertId?: string | null;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ name: 'is_paid', type: 'boolean', default: false })
   @IsBoolean()
   isPaid: boolean = false;
-
-  @Column({ 
-    type: 'varchar', 
-    default: 'pending'
-  })
-  status: 'pending' | 'preparing' | 'ready' | 'delivered' = 'pending';
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
   created_at!: Date;
@@ -66,7 +60,7 @@ export class Order {
   @Column({ type: 'text', nullable: true })
   @IsString()
   @IsOptional()
-  observations: string | null = null;
+  info?: string | null;
 
   // Método para calcular o total do pedido
   calculateTotal(): number {

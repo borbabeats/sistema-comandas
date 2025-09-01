@@ -26,7 +26,7 @@ const corsOptions = {
     'http://localhost:3000',  // For local development
     'http://localhost:5000'   // For local development
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 };
@@ -90,12 +90,9 @@ const startServer = async () => {
       
       // Log de rotas disponíveis
       console.log('\n🛣️  Rotas disponíveis:');
-      app._router.stack
-        .filter((r: any) => r.route)
-        .map((r: any) => {
-          const method = Object.keys(r.route.methods)[0].toUpperCase();
-          console.log(`  ${method.padEnd(6)} ${r.route.path}`);
-        });
+      console.log('  GET    /health');
+      console.log('  GET    /test-db');
+      console.log('  *      /api/* (rotas da API)');
     });
 
     // Tratamento de erros não capturados
