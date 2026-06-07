@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
 import { User, Plate, Dessert, Beverage, Order } from '../entities';
+import { logInfo, logError } from '../config/logger';
 
 // Interface para tipagem da configuração do banco de dados
 interface DatabaseConfig {
@@ -23,39 +24,28 @@ function getDatabaseConfig(): DatabaseConfig {
   const isProduction = process.env.NODE_ENV === 'production';
   
   // Log das variáveis de ambiente para depuração
-  console.log('\n=== Configuração do Banco de Dados ===');
-  console.log('NODE_ENV:', process.env.NODE_ENV);
-  console.log('PORT:', process.env.PORT || '3000 (padrão)');
-  console.log('DATABASE_URL:', process.env.DATABASE_URL ? '*** Configurado ***' : 'Não configurado');
-  
-  // Log das variáveis de ambiente do Railway
-  console.log('\n=== Variáveis do Railway ===');
-  console.log('DB_USER:', process.env.DB_USER ? '***' : 'Não configurado');
-  console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? '***' : 'Não configurado');
-  console.log('DB_NAME:', process.env.DB_NAME || 'Não configurado');
-  
-  // Log de todas as variáveis de ambiente (útil para depuração)
-  console.log('\n=== Todas as Variáveis de Ambiente ===');
-  console.log('DB_HOST:', process.env.DB_HOST);
-  console.log('DB_PORT:', process.env.DB_PORT);
-  console.log('DB_USERNAME:', process.env.DB_USERNAME);
-  console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? 'DEFINIDA' : 'NÃO DEFINIDA');
-  console.log('DB_NAME:', process.env.DB_NAME);
-  Object.keys(process.env).forEach(key => {
-    if (key.startsWith('DB_') || key.startsWith('PG') || key === 'NODE_ENV' || key === 'PORT' || key === 'DATABASE_URL') {
-      console.log(`${key}:`, key.includes('PASS') || key === 'DB_PASSWORD' || key === 'DB_USER' ? '***' : process.env[key]);
-    }
+  logInfo('=== Configuração do Banco de Dados ===', {
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: process.env.PORT || '3000 (padrão)',
+    DATABASE_URL: process.env.DATABASE_URL ? '*** Configurado ***' : 'Não configurado',
+    DB_USER: process.env.DB_USER ? '***' : 'Não configurado',
+    DB_PASSWORD: process.env.DB_PASSWORD ? '***' : 'Não configurado',
+    DB_NAME: process.env.DB_NAME || 'Não configurado',
+    DB_HOST: process.env.DB_HOST,
+    DB_PORT: process.env.DB_PORT,
+    DB_USERNAME: process.env.DB_USERNAME,
+    DB_PASSWORD_STATUS: process.env.DB_PASSWORD ? 'DEFINIDA' : 'NÃO DEFINIDA',
   });
 
   // Configuração para produção (usando DATABASE_URL ou variáveis individuais)
   if (isProduction) {
     if (process.env.DATABASE_URL) {
-      console.log('Usando configuração de produção com DATABASE_URL');
+      logInfo('Usando configuração de produção com DATABASE_URL');
       
       // Se a DATABASE_URL contiver placeholders, substitua-os pelos valores reais
       let databaseUrl = process.env.DATABASE_URL;
       if (databaseUrl.includes('${')) {
-        console.log('Substituindo placeholders na DATABASE_URL');
+        logInfo('Substituindo placeholders na DATABASE_URL');
         // Tenta usar PGHOST se existir, senão tenta localhost (padrão do Railway)
         const dbHost = process.env.PGHOST || 'localhost';
         databaseUrl = databaseUrl
@@ -63,7 +53,7 @@ function getDatabaseConfig(): DatabaseConfig {
           .replace('${DB_PASSWORD}', process.env.DB_PASSWORD || '')
           .replace('${PGHOST}', dbHost)
           .replace('${DB_NAME}', process.env.DB_NAME || 'comandas');
-        console.log('DATABASE_URL após substituição:', databaseUrl.replace(/:([^:]+)@/, ':***@'));
+        logInfo('DATABASE_URL após substituição', { url: databaseUrl.replace(/:([^:]+)@/, ':***@') });
       }
       
       return {
@@ -77,7 +67,7 @@ function getDatabaseConfig(): DatabaseConfig {
     }
     
     // Se não tiver DATABASE_URL, tenta usar as variáveis individuais do Railway
-    console.log('Usando configuração de produção com variáveis individuais do Railway');
+    logInfo('Usando configuração de produção com variáveis individuais do Railway');
     const dbConfig: DatabaseConfig = {
       type: 'postgres',
       host: 'postgres_db', // Nome do container do PostgreSQL
@@ -91,7 +81,7 @@ function getDatabaseConfig(): DatabaseConfig {
       }
     };
     
-    console.log('Configuração do banco de dados (sem senha):', {
+    logInfo('Configuração do banco de dados (sem senha)', {
       ...dbConfig,
       password: '***',
       extra: { ssl: { rejectUnauthorized: false } }
@@ -101,7 +91,7 @@ function getDatabaseConfig(): DatabaseConfig {
   }
 
   // Configuração para desenvolvimento local
-  console.log('Usando configuração de desenvolvimento local');
+  logInfo('Usando configuração de desenvolvimento local');
   const config: DatabaseConfig = {
     type: 'postgres',
     host: process.env.DB_HOST || 'localhost',
@@ -113,39 +103,47 @@ function getDatabaseConfig(): DatabaseConfig {
   };
 
   // Log da configuração (sem senha)
-  console.log('\nConfiguração do banco de dados:');
-  console.log('- Host:', config.host);
-  console.log('- Porta:', config.port);
-  console.log('- Usuário:', config.username);
-  console.log('- Senha:', config.password ? '***' : 'não definida');
-  console.log('- Banco de dados:', config.database);
-  console.log('- SSL:', 'desativado');
+  logInfo('Configuração do banco de dados', {
+    host: config.host,
+    port: config.port,
+    username: config.username,
+    password: config.password ? '***' : 'não definida',
+    database: config.database,
+    ssl: 'desativado'
+  });
 
   return config;
 }
 
-// Obtém a configuração do banco de dados
-const dbConfig = getDatabaseConfig();
+// DataSource criado de forma lazy para garantir que dotenv já foi carregado
+let _appDataSource: DataSource | null = null;
 
-// Cria a fonte de dados do TypeORM
-export const AppDataSource = new DataSource({
-  ...dbConfig,
-  entities: [
-    User, 
-    Plate, 
-    Dessert, 
-    Beverage, 
-    Order
-  ],
-  synchronize: false, // Desativado para evitar conflitos com dados existentes
-  logging: process.env.NODE_ENV === 'development',
-  migrations: ['src/migrations/*.ts'],
-  subscribers: [],
-  // Configurações adicionais de pool de conexão
-  poolSize: 10,
-  maxQueryExecutionTime: 10000, // 10 segundos
-  connectTimeoutMS: 10000, // 10 segundos
-  applicationName: 'sistema-comandas-api',
+export function getAppDataSource(): DataSource {
+  if (!_appDataSource) {
+    const dbConfig = getDatabaseConfig();
+    _appDataSource = new DataSource({
+      ...dbConfig,
+      entities: [User, Plate, Dessert, Beverage, Order],
+      synchronize: false,
+      logging: process.env.NODE_ENV === 'development',
+      migrations: ['src/migrations/*.ts'],
+      subscribers: [],
+      poolSize: 10,
+      maxQueryExecutionTime: 10000,
+      connectTimeoutMS: 10000,
+      applicationName: 'sistema-comandas-api',
+    });
+  }
+  return _appDataSource;
+}
+
+// Compatibilidade com código existente que usa AppDataSource
+export const AppDataSource = new Proxy({} as DataSource, {
+  get(_target, prop) {
+    const ds = getAppDataSource();
+    const val = (ds as any)[prop];
+    return typeof val === 'function' ? val.bind(ds) : val;
+  }
 });
 
 // Contador de tentativas de reconexão
@@ -159,11 +157,11 @@ const MAX_RECONNECTION_ATTEMPTS = 5;
  */
 export const initializeDatabase = async (): Promise<DataSource> => {
   try {
-    console.log('\n🔌 Conectando ao banco de dados...');
+    logInfo('Conectando ao banco de dados...');
     
     // Verifica se já está conectado
     if (AppDataSource.isInitialized) {
-      console.log('✅ Já conectado ao banco de dados');
+      logInfo('Já conectado ao banco de dados');
       return AppDataSource;
     }
     
@@ -173,7 +171,7 @@ export const initializeDatabase = async (): Promise<DataSource> => {
     // Testa a conexão com uma consulta simples
     await dataSource.query('SELECT 1');
     
-    console.log('✅ Conexão com o banco de dados estabelecida com sucesso!');
+    logInfo('Conexão com o banco de dados estabelecida com sucesso!');
     reconnectionAttempts = 0; // Reseta o contador de tentativas
     
     return dataSource;
@@ -181,37 +179,37 @@ export const initializeDatabase = async (): Promise<DataSource> => {
     reconnectionAttempts++;
     
     // Log detalhado do erro
-    console.error('\n❌ Erro ao conectar ao banco de dados:');
-    console.error('Código:', error.code || 'N/A');
-    console.error('Mensagem:', error.message);
-    
-    // Tratamento de erros comuns
-    if (error.code === 'ECONNREFUSED') {
-      console.error('\n🔴 Erro: Conexão recusada pelo servidor do banco de dados');
-      console.error('Verifique se o servidor PostgreSQL está em execução e acessível');
-      console.error(`Host: ${dbConfig.host || 'localhost'}, Porta: ${dbConfig.port || 5432}`);
-    } else if (error.code === '3D000') {
-      console.error('\n🔴 Erro: Banco de dados não encontrado');
-      console.error(`Verifique se o banco de dados "${dbConfig.database}" existe`);
-    } else if (error.code === '28P01') {
-      console.error('\n🔴 Erro: Falha na autenticação');
-      console.error('Verifique o nome de usuário e senha do banco de dados');
-    } else if (error.message.includes('getaddrinfo ENOTFOUND')) {
-      console.error('\n🔴 Erro: Não foi possível resolver o endereço do host do banco de dados');
-      console.error('Verifique se o host do banco de dados está correto');
-    }
+    const ds = getAppDataSource() as any;
+    logError('Erro ao conectar ao banco de dados', error, {
+      errorCode: error.code || 'N/A',
+      errorMessage: error.message,
+      errorType: error.code === 'ECONNREFUSED' ? 'CONNECTION_REFUSED' :
+                error.code === '3D000' ? 'DATABASE_NOT_FOUND' :
+                error.code === '28P01' ? 'AUTHENTICATION_FAILED' :
+                error.message.includes('getaddrinfo ENOTFOUND') ? 'HOST_NOT_FOUND' :
+                'UNKNOWN_ERROR',
+      host: ds.options?.host || 'localhost',
+      port: ds.options?.port || 5432,
+      database: ds.options?.database,
+      attempt: reconnectionAttempts,
+      maxAttempts: MAX_RECONNECTION_ATTEMPTS,
+    });
     
     // Tenta reconectar se ainda não excedeu o número máximo de tentativas
     if (reconnectionAttempts < MAX_RECONNECTION_ATTEMPTS) {
       const delay = Math.pow(2, reconnectionAttempts) * 1000; // Backoff exponencial
-      console.log(`\n🔄 Tentando reconectar em ${delay/1000} segundos (${reconnectionAttempts + 1}/${MAX_RECONNECTION_ATTEMPTS})...`);
+      logInfo(`Tentando reconectar em ${delay/1000} segundos`, {
+        attempt: reconnectionAttempts + 1,
+        maxAttempts: MAX_RECONNECTION_ATTEMPTS,
+        delay: `${delay}ms`
+      });
       
       await new Promise(resolve => setTimeout(resolve, delay));
       return initializeDatabase(); // Tenta novamente
     }
     
     // Se excedeu o número máximo de tentativas, lança o erro
-    console.error(`\n❌ Número máximo de tentativas de conexão (${MAX_RECONNECTION_ATTEMPTS}) excedido`);
+    logError(`Número máximo de tentativas de conexão (${MAX_RECONNECTION_ATTEMPTS}) excedido`, error);
     throw error;
   }
 };
@@ -221,9 +219,10 @@ export const testDatabaseConnection = async (): Promise<boolean> => {
   try {
     const dataSource = await initializeDatabase();
     await dataSource.destroy();
+    logInfo('Teste de conexão com o banco de dados bem-sucedido');
     return true;
   } catch (error) {
-    console.error('❌ Falha ao testar a conexão com o banco de dados:', error);
+    logError('Falha ao testar a conexão com o banco de dados', error as Error);
     return false;
   }
 };

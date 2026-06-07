@@ -3,6 +3,7 @@ import platesRouter from './plates.routes';
 import beveragesRouter from './beverages.routes';
 import dessertsRouter from './desserts.routes';
 import ordersRouter from './orders.routes';
+import socketRouter from './socket.routes';
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.use('/plates', platesRouter);
 router.use('/beverages', beveragesRouter);
 router.use('/desserts', dessertsRouter);
 router.use('/orders', ordersRouter);
+router.use('/socket', socketRouter);
 
 export default router;

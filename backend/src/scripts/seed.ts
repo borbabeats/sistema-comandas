@@ -19,10 +19,10 @@ async function seed() {
   try {
     console.log('Connected to the database');
     
-    // Lê os dados dos arquivos JSON
-    const beveragesPath = path.join(__dirname, '../../beverages.json');
-    const dessertsPath = path.join(__dirname, '../../desserts.json');
-    const platesPath = path.join(__dirname, '../../plates.json');
+    // Lê os dados dos arquivos JSON da pasta docker/sql
+    const beveragesPath = path.join(__dirname, '../../../docker/sql/beverages_fixed.json');
+    const dessertsPath = path.join(__dirname, '../../../docker/sql/desserts_fixed.json');
+    const platesPath = path.join(__dirname, '../../../docker/sql/plates_fixed.json');
     
     const beveragesData = JSON.parse(fs.readFileSync(beveragesPath, 'utf-8'));
     const dessertsData = JSON.parse(fs.readFileSync(dessertsPath, 'utf-8'));
@@ -42,7 +42,7 @@ async function seed() {
         name: beverage.name,
         description: beverage.description,
         price: beverage.price,
-        type: beverage.type,
+        category: beverage.type || beverage.category,
         info: beverage.info
       });
       await beverageRepository.save(newBeverage);
@@ -73,7 +73,7 @@ async function seed() {
         description: plate.description,
         price: plate.price,
         info: plate.info,
-        type: Array.isArray(plate.type) ? plate.type : [plate.type].filter(Boolean)
+        type: plate.type
       });
       await plateRepository.save(newPlate);
       console.log(`Added plate: ${plate.name}`);

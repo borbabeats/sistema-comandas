@@ -115,8 +115,7 @@ function getDatabaseConfig() {
       'dist/entities/**/*.js'
     ],
     migrations: [
-      'src/migrations/**/*.ts',
-      'dist/migrations/**/*.js'
+      'src/migrations/**/*.ts'
     ],
     cli: {
       entitiesDir: 'src/entities',

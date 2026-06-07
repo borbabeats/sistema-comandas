@@ -32,6 +32,11 @@ export class Plate {
   @IsOptional()
   type?: string[];
 
+  @Column({ name: 'imgurl', type: 'text', nullable: true })
+  @IsString()
+  @IsOptional()
+  imgurl?: string;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
   created_at!: Date;
 

@@ -1,16 +1,32 @@
-import { Box, VStack, Heading, Text, Button, SimpleGrid, Image, useToast, Spinner, Alert, AlertIcon, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
+import { Box, VStack, Heading, Text, Button, SimpleGrid, useToast, Spinner, Alert, AlertIcon, Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react';
 import { FiShoppingCart, FiPlus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../stores/cartStore';
 import { useProductStore } from '../stores/productStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Product } from '../services/api';
+
+// Componente de imagem com fallback robusto
+const ProductImage = ({ product }: { product: Product }) => {
+  const [imageError, setImageError] = useState(false);
+
+  return (
+    <Box w="100%" h="200px" overflow="hidden" position="relative">
+      <img
+        src={product.imgurl || ''}
+        alt={product.name}
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        onError={() => setImageError(true)}
+      />
+    </Box>
+  );
+};
 
 const HomePage = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const { addToCart } = useCartStore();
-  const { products, loading, error, fetchProducts, getProductsByType } = useProductStore();
+  const { loading, error, fetchProducts, getProductsByType } = useProductStore();
 
   useEffect(() => {
     fetchProducts();
@@ -75,25 +91,7 @@ const HomePage = () => {
             boxShadow="md"
             _hover={{ transform: 'translateY(-4px)', transition: 'transform 0.2s' }}
           >
-            <Image 
-              src={product.image} 
-              alt={product.name} 
-              w="100%" 
-              h="200px" 
-              objectFit="cover" 
-              fallback={
-                <Box 
-                  w="100%" 
-                  h="200px" 
-                  bg="gray.100" 
-                  display="flex" 
-                  alignItems="center" 
-                  justifyContent="center"
-                >
-                  <Text color="gray.500">Carregando imagem...</Text>
-                </Box>
-              }
-            />
+            <ProductImage product={product} />
             <Box p={4}>
               <Heading as="h3" size="md" mb={2}>
                 {product.name}

@@ -9,6 +9,7 @@ import { Dessert } from '../entities/Dessert';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { UpdateOrderDto } from '../dto/update-order.dto';
 import { handleError } from '../middleware/error-handler';
+import { socketService, OrderSocketData } from '../config/socket';
 
 // Type for async request handlers
 type AsyncRequestHandler = (
@@ -105,6 +106,32 @@ const createOrder: AsyncRequestHandler = async (req, res) => {
     if (!orderWithRelations) {
       throw new Error('Falha ao carregar os detalhes do pedido após a criação');
     }
+
+    // Broadcast new order via WebSocket
+    const orderSocketData: OrderSocketData = {
+      orderId: orderWithRelations.id,
+      clientName: orderWithRelations.clientName,
+      items: {
+        plate: orderWithRelations.plate ? {
+          name: orderWithRelations.plate.name,
+          price: orderWithRelations.plate.price
+        } : undefined,
+        beverage: orderWithRelations.beverage ? {
+          name: orderWithRelations.beverage.name,
+          price: orderWithRelations.beverage.price
+        } : undefined,
+        dessert: orderWithRelations.dessert ? {
+          name: orderWithRelations.dessert.name,
+          price: orderWithRelations.dessert.price
+        } : undefined
+      },
+      total: orderWithRelations.calculateTotal(),
+      isPaid: orderWithRelations.isPaid,
+      createdAt: orderWithRelations.created_at.toISOString(),
+      status: 'pending'
+    };
+
+    socketService.broadcastNewOrder(orderSocketData);
 
     return res.status(201).json(orderWithRelations);
   } catch (error) {

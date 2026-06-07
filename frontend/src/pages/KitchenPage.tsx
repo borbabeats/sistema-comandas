@@ -148,10 +148,15 @@ const KitchenPage: React.FC = () => {
           });
         }
         
-        // Extrai o status do campo info se existir
-        let status = 'pending';
+        // Extrai o status do campo info se existir (formato: status:preparing)
+        let status: OrderStatusType = 'pending';
         if (order.info && typeof order.info === 'string' && order.info.startsWith('status:')) {
-          status = order.info.replace('status:', '').trim();
+          const extractedStatus = order.info.replace('status:', '') as OrderStatusType;
+          if (['pending', 'preparing', 'ready', 'delivered'].includes(extractedStatus)) {
+            status = extractedStatus;
+          }
+        } else if (order.status) {
+          status = order.status as OrderStatusType;
         }
         
         return {
@@ -184,6 +189,7 @@ const KitchenPage: React.FC = () => {
     if (!currentStatus) return;
     
     const statusConfigItem = getStatusConfig(currentStatus);
+    console.log(statusConfigItem)
     const newStatus = statusConfigItem.nextStatus as OrderStatusType | undefined;
     
     if (!newStatus) return;

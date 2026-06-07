@@ -45,6 +45,7 @@ export interface Order {
   beverage?: Beverage;
   dessert?: Dessert;
   status?: 'pending' | 'preparing' | 'ready' | 'delivered';
+  info?: string;
   isPaid: boolean;
   observations?: string;
   createdAt: string;
@@ -67,7 +68,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  image?: string;
+  imgurl?: string;
   type: 'plate' | 'beverage' | 'dessert';
 }
 
